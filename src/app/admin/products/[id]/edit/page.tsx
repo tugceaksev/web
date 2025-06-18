@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 type Product = {
   id: string;
@@ -12,22 +12,20 @@ type Product = {
   image: string;
 };
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export default function EditProductPage({ params }: Props) {
+export default function EditProductPage() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    fetch(`/api/products/${params.id}`)
-      .then((res) => res.json())
-      .then(setProduct)
-      .catch(console.error);
-  }, [params.id]);
+    if (id) {
+      fetch(`/api/products/${id}`)
+        .then((res) => res.json())
+        .then(setProduct)
+        .catch(console.error);
+    }
+  }, [id]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -37,7 +35,7 @@ export default function EditProductPage({ params }: Props) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch(`/api/products/${params.id}`, {
+    const response = await fetch(`/api/products/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
