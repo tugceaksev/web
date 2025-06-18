@@ -15,7 +15,7 @@ type Product = {
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id ? String(params.id) : '';
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {

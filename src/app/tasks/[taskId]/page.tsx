@@ -1,10 +1,11 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import TaskDetailView from './TaskDetailView';
 
-export default async function TaskDetailPage({ params }: { params: { taskId: string } }) {
+export default async function TaskDetailPage({ params }: { params: Promise<{ taskId: string }> }) {
+  const { taskId } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -13,7 +14,7 @@ export default async function TaskDetailPage({ params }: { params: { taskId: str
 
   const task = await prisma.task.findUnique({
     where: {
-      id: params.taskId,
+      id: taskId,
       userId: session.user.id,
     },
     include: {

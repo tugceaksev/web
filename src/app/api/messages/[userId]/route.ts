@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function GET(req: Request, { params }: { params: { userId: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ userId: string }> }) {
   try {
     const session = await getServerSession(authOptions)
 
@@ -14,7 +14,7 @@ export async function GET(req: Request, { params }: { params: { userId: string }
       )
     }
 
-    const userId = params.userId
+    const { userId } = await params
 
     const messages = await prisma.message.findMany({
       where: {

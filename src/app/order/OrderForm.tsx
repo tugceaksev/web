@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Product } from '@/types';
@@ -29,6 +30,7 @@ export default function OrderForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { cartItems, clearCart } = useCart();
+  const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -79,7 +81,7 @@ export default function OrderForm() {
 
         toast.success('Siparişiniz başarıyla oluşturuldu!');
         clearCart();
-        window.location.href = '/order-success';
+        router.push('/order-success');
       } catch (error: unknown) {
         console.error('API Hatası:', error);
         if (error instanceof Error) {

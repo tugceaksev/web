@@ -1,16 +1,21 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import OrderForm from './OrderForm';
 
 export default function OrderPageClient() {
   const { cartItems } = useCart();
 
+  useEffect(() => {
+    if (cartItems.length === 0 || !cartItems[0]) {
+      window.location.href = '/menu';
+    }
+  }, [cartItems]);
+
   if (cartItems.length === 0 || !cartItems[0]) {
-    window.location.href = '/menu';
     return null;
   }
-
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">

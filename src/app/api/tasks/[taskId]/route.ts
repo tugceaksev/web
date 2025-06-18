@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { TaskStatus } from '@prisma/client';
 
 export async function GET(
   request: Request,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,10 +17,12 @@ export async function GET(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    const { taskId } = await params;
+
     // First find the task
     const task = await prisma.task.findFirst({
       where: {
-        id: params.taskId,
+        id: taskId,
         userId: session.user.id,
       },
       include: {
@@ -46,7 +48,7 @@ export async function GET(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -57,10 +59,12 @@ export async function DELETE(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    const { taskId } = await params;
+
     // First find the task to verify ownership
     const existingTask = await prisma.task.findFirst({
       where: {
-        id: params.taskId,
+        id: taskId,
         userId: session.user.id,
       },
     });
@@ -72,7 +76,7 @@ export async function DELETE(
     // Then delete it
     const task = await prisma.task.delete({
       where: {
-        id: params.taskId,
+        id: taskId,
       },
     });
 
@@ -85,7 +89,7 @@ export async function DELETE(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { taskId: string } }
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -96,10 +100,12 @@ export async function PATCH(
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    const { taskId } = await params;
+
     // First find the task to verify ownership
     const existingTask = await prisma.task.findFirst({
       where: {
-        id: params.taskId,
+        id: taskId,
         userId: session.user.id,
       },
     });
@@ -115,7 +121,7 @@ export async function PATCH(
     // Then update it
     const task = await prisma.task.update({
       where: {
-        id: params.taskId,
+        id: taskId,
       },
       data: {
         title,

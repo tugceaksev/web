@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { updateOrderStatus, deleteOrder } from './actions';
 
 interface OrderActionsProps {
@@ -11,6 +12,7 @@ interface OrderActionsProps {
 export default function OrderActions({ orderId, currentStatus }: OrderActionsProps) {
   const [status, setStatus] = useState(currentStatus);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleStatusChange = async (newStatus: string) => {
     try {
@@ -34,7 +36,7 @@ export default function OrderActions({ orderId, currentStatus }: OrderActionsPro
       setIsLoading(true);
       await deleteOrder(orderId);
       // Sayfayı yenile
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error('Error deleting order:', error);
       alert('Sipariş silinirken bir hata oluştu.');
