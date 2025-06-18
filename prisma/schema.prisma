@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid()) @map("_id")
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("USER")
+  tasks     Task[]    @relation("UserTasks")
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Task {
+  id          String    @id @default(cuid()) @map("_id")
+  title       String
+  description String
+  status      TaskStatus @default(PENDING)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+  user        User      @relation("UserTasks", fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Message {
+  id          String    @id @default(cuid()) @map("_id")
+  content     String
+  sender      User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId    String
+  receiver    User      @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String    @id @default(cuid()) @map("_id")
+  name        String
+  description String
+  price       Float
+  image       String?
+  category    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  orders      OrderItem[]
+}
+
+model Order {
+  id          String    @id @default(cuid()) @map("_id")
+  customerName String
+  phone       String
+  address     String
+  status      OrderStatus @default(PENDING)
+  totalAmount Float
+  items       OrderItem[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model OrderItem {
+  id        String    @id @default(cuid()) @map("_id")
+  quantity  Int
+  price     Float
+  orderId   String
+  productId String
+  order     Order     @relation(fields: [orderId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+}
+
+model ContactInfo {
+  id           Int      @id @default(1) @map("_id")
+  address      String
+  phone        String
+  email        String
+  mapUrl       String
+  workingHours String
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+} 

@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #3b82f6;
+  --secondary: #64748b;
+  --secondary-dark: #475569;
+  --secondary-light: #94a3b8;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+  --ring: #2563eb;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #60a5fa;
+  --secondary: #94a3b8;
+  --secondary-dark: #64748b;
+  --secondary-light: #cbd5e1;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #3b82f6;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark;
+  }
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary-dark;
+  }
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-secondary hover:text-white;
+  }
+  .btn-ghost {
+    @apply hover:bg-secondary hover:bg-opacity-10 hover:text-secondary-dark;
+  }
+  .btn-link {
+    @apply text-primary underline-offset-4 hover:underline;
+  }
+  
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+  
+  .nav-link {
+    @apply text-sm font-medium transition-colors hover:text-primary;
+  }
+}
