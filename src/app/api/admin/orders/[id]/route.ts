@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
@@ -13,11 +13,12 @@ export async function PATCH(
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
+  const { id } = await params;
   const { status } = await request.json();
 
   try {
     const order = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: { status }
     });
 
@@ -29,7 +30,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
@@ -37,13 +38,15 @@ export async function DELETE(
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
+  const { id } = await params;
+
   try {
     await prisma.orderItem.deleteMany({
-      where: { orderId: params.id }
+      where: { orderId: id }
     });
 
     await prisma.order.delete({
-      where: { id: params.id }
+      where: { id }
     });
 
     return new NextResponse(null, { status: 204 });
