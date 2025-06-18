@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Görev Yönetim Sistemi
 
 Modern ve kullanıcı dostu bir görev yönetim uygulaması. İnternet Programcılığı II dersi için geliştirilmiştir.
@@ -82,3 +83,6 @@ Modern ve kullanıcı dostu bir görev yönetim uygulaması. İnternet Programc�
 ## Lisans
 
 Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+=======
+# web
+>>>>>>> 46d1235f4d8deefad4fcf268ead264039feef426
