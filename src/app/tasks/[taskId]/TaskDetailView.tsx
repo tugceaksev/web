@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Task, TaskStatus } from '@prisma/client';
-import { useSession } from 'next-auth/react';
 
 interface TaskWithUser extends Task {
   user: {
