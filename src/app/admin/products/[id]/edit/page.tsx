@@ -12,11 +12,13 @@ type Product = {
   image: string;
 };
 
-export default function EditProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type Props = {
+  params: {
+    id: string;
+  };
+};
+
+export default function EditProductPage({ params }: Props) {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
 
