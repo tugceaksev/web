@@ -1,3 +1,5 @@
+//Bu dosya, yeni kullanıcıların kayıt olmasını sağlar.
+
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'

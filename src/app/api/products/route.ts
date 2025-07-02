@@ -1,11 +1,12 @@
+//Bu dosya, ürünleri alır ve oluşturur.
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET() { //Ürünleri al
   try {
-    const products = await prisma.product.findMany({
+    const products = await prisma.product.findMany({ //Ürünleri al
       where: { isDeleted: false },
     });
     return NextResponse.json(products);
@@ -18,12 +19,12 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request) { //Ürün oluştur
   try {
     const session = await getServerSession(authOptions);
     console.log('Session in product creation:', session);
 
-    if (!session?.user || session.user.role !== 'ADMIN') {
+    if (!session?.user || session.user.role !== 'ADMIN') { //Admin yetkisi kontrolü
       console.log('Unauthorized access attempt');
       return NextResponse.json(
         { error: 'Yetkilendirme gerekli. Sadece admin kullanıcılar ürün ekleyebilir.' },
@@ -31,8 +32,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
-    console.log('Received product data:', body);
+    const body = await request.json(); //Ürün verilerini al
+    console.log('Received product data:', body); //Ürün verilerini logla
     
     const { name, description, price, category, image } = body;
 
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const product = await prisma.product.create({
+    const product = await prisma.product.create({ //Ürün oluştur
       data: {
         name: name.trim(),
         description: description.trim(),
@@ -61,14 +62,14 @@ export async function POST(request: Request) {
       }
     });
 
-    console.log('Product created successfully:', product);
+    console.log('Product created successfully:', product); //Ürün oluşturulduğunda hata mesajı döndür
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error('Error creating product:', error);
     
     // Prisma hatalarını yakala
     if (error instanceof Error) {
-      if (error.message.includes('Unique constraint')) {
+      if (error.message.includes('Unique constraint')) { //Eğer ürün adı zaten kullanılıyorsa hata mesajı döndür
         return NextResponse.json(
           { error: 'Bu ürün adı zaten kullanılıyor.' },
           { status: 400 }
@@ -76,6 +77,7 @@ export async function POST(request: Request) {
       }
     }
     
+    //Hata durumunda hata mesajı döndür
     return NextResponse.json(
       { error: 'Ürün oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.' },
       { status: 500 }

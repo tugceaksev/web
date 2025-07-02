@@ -41,14 +41,18 @@ export default function ProductForm() {
         console.log('Başarılı yanıt:', result);
         router.push('/admin/products');
       } else {
-        let errorData: any = {};
+        let errorData: unknown = {};
         try {
           errorData = await response.json();
         } catch {
           errorData = { error: 'Sunucudan yanıt alınamadı.' };
         }
         console.error('API hatası:', errorData);
-        setError(errorData.error || 'Ürün eklenirken bir hata oluştu.');
+        if (typeof errorData === 'object' && errorData !== null && 'error' in errorData) {
+          setError((errorData as { error: string }).error || 'Ürün eklenirken bir hata oluştu.');
+        } else {
+          setError('Ürün eklenirken bir hata oluştu.');
+        }
       }
     } catch (error) {
       console.error('Form gönderme hatası:', error);
@@ -160,3 +164,6 @@ export default function ProductForm() {
     </div>
   );
 } 
+//Bu dosya, adminin yeni ürün eklemesini sağlar.
+//Formdan alınan veriler API’ya gönderilir, başarılıysa yönlendirme yapılır, 
+// hata varsa kullanıcıya gösterilir.

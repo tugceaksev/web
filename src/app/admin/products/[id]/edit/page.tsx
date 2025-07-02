@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Product = {
@@ -15,14 +15,16 @@ type Product = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EditProductPage({ params }: { params: any }) {
   const router = useRouter();
+  const realParams = use(params); // Promise unwrap
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    fetch(`/api/products/${params.id}`)
+    if (!realParams || typeof realParams !== 'object' || !('id' in realParams)) return;
+    fetch(`/api/products/${(realParams as { id: string }).id}`)
       .then((res) => res.json())
       .then(setProduct)
       .catch(console.error);
-  }, [params.id]);
+  }, [realParams]);
 
   if (!product) {
     return <div>Loading...</div>;
@@ -32,7 +34,8 @@ export default function EditProductPage({ params }: { params: any }) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const response = await fetch(`/api/products/${params.id}`, {
+    const id = typeof realParams === 'object' && realParams && 'id' in realParams ? (realParams as { id: string }).id : '';
+    const response = await fetch(`/api/products/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

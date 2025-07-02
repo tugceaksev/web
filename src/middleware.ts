@@ -17,3 +17,4 @@ export default async function middleware(request: NextRequestWithAuth) {
 export const config = {
   matcher: ['/admin/:path*'],
 }; 
+//admin paneli için middleware

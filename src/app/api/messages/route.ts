@@ -1,20 +1,21 @@
+//Bu dosya, mesajları gönderir ve alır.
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(req: Request) {
+export async function POST(req: Request) { //Mesaj gönder
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session?.user?.id) {
+    if (!session?.user?.id) { //Kullanıcı yetkisi kontrolü
       return NextResponse.json(
         { message: 'Yetkilendirme gerekli' },
         { status: 401 }
       )
     }
 
-    const { receiverId, content } = await req.json()
+    const { receiverId, content } = await req.json() //Mesajı al
 
     if (!receiverId || !content) {
       return NextResponse.json(
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
           receiver: { select: { id: true, name: true, email: true } },
         },
       })
-      // sender adını override et
+      
       message.sender.name = 'ar-el Catering'
     } else {
       message = await prisma.message.create({
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET() { //Mesajları al
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {

@@ -49,7 +49,15 @@ Modern ve kullanıcı dostu bir görev yönetim uygulaması. İnternet Programc�
    npm run dev
    ```
 
-6. Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresini açın.
+   Sunucu artık otomatik olarak tüm yerel ağda paylaşılır. Kendi bilgisayarınızın IP adresini öğrenip, ağdaki diğer cihazlardan şu şekilde erişebilirsiniz:
+   
+   ```
+   http://<bilgisayar-ip-adresi>:3000
+   ```
+   
+   Örneğin: `http://192.168.1.137:3000`
+
+6. Tarayıcınızda [http://localhost:3000](http://localhost:3000) veya yukarıdaki IP adresiyle uygulamayı açın.
 
 ## Kullanım
 

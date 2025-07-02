@@ -1,16 +1,17 @@
+//Bu dosya, siparişleri oluşturur ve alır.
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 
 // TypeScript tip tanımlamaları
-interface OrderItem {
+interface OrderItem { //Sipariş öğesi
   productId: string;
   quantity: number;
   price: number;
 }
 
-interface OrderBody {
+interface OrderBody { //Sipariş gövdesi
   customerName: string;
   phone: string;
   address: string;
@@ -20,14 +21,14 @@ interface OrderBody {
   };
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request) { //Sipariş oluştur
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    if (!session?.user?.id) { //Kullanıcı yetkisi kontrolü
       return NextResponse.json({ success: false, error: 'Yetkilendirme gerekli' }, { status: 401 });
     }
-    const body: OrderBody = await request.json();
-    console.log('API Request:', body);
+    const body: OrderBody = await request.json(); //Sipariş gövdesini al
+    console.log('API Request:', body); //Sipariş gövdesini logla
 
     // Body doğrulama
     if (
@@ -47,11 +48,11 @@ export async function POST(request: Request) {
 
     // Ürünlerin varlığını kontrol et
     const productIds = body.items.create.map((item) => item.productId);
-    const existingProducts = await prisma.product.findMany({
+    const existingProducts = await prisma.product.findMany({ //Ürünlerin varlığını kontrol et
       where: { id: { in: productIds } },
     });
 
-    if (existingProducts.length !== productIds.length) {
+    if (existingProducts.length !== productIds.length) { //Eğer bazı ürünler bulunamadıysa hata mesajı döndür
       return NextResponse.json(
         { success: false, error: 'Bazı ürünler bulunamadı' },
         { status: 400 }
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
     }
 
     // Sipariş oluştur
-    const orderData = {
+    const orderData = { //Sipariş verilerini oluştur
       customerName: body.customerName,
       phone: body.phone,
       address: body.address,

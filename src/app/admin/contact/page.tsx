@@ -152,3 +152,5 @@ export default function AdminContactPage() {
     </div>
   );
 } 
+//Admin, iletişim bilgilerini bu sayfadan görebilir ve güncelleyebilir.
+//Bilgiler API’dan çekilir ve güncellenir, form ile kolayca düzenlenir.

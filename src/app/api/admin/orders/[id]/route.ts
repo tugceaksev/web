@@ -3,47 +3,47 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 
-export async function PATCH(
+export async function PATCH( //Sipariş durumunu güncelleme
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user || session.user.role !== 'ADMIN') {
+  if (!session?.user || session.user.role !== 'ADMIN') { //Admin yetkisi kontrolü
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }
     );
   }
 
-  const { status } = await request.json();
+  const { status } = await request.json(); //Sipariş durumunu al
   const { id } = await params;
 
   try {
-    const order = await prisma.order.update({
+    const order = await prisma.order.update({ //Sipariş durumunu güncelle
       where: { id },
       data: { status }
     });
 
     return NextResponse.json(order);
-  } catch {
+  } catch { //Hata durumunda hata mesajı döndür
     return NextResponse.json(
       { error: 'Error updating order' },
-      { status: 500 }
+      { status: 500 } 
     );
   }
 }
 
-export async function DELETE(
+export async function DELETE( //Siparişi silme
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json(
+  if (!session?.user || session.user.role !== 'ADMIN') { //Admin yetkisi kontrolü
+    return NextResponse.json( 
       { error: 'Unauthorized' },
-      { status: 401 }
+      { status: 401 } 
     );
   }
 
